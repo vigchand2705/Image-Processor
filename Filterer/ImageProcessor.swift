@@ -129,18 +129,6 @@ public struct ImageProcessor {
         return pixel
     }
     
-//    public func changeMagnitude (mag: Double) {
-//        //var currentFilter = contrast
-//        //print "\(currentFilter)"
-//        for x in 0..<image.width {
-//            for y in 0..<image.height {
-//                let index = y * image.width + x
-//                var pixel = image.pixels[index]
-//                pixel = currentFilter(pixel, magnitude: mag)
-//                image.pixels[index] = pixel
-//            }
-//        }
-//
-//    }
+
 }
 

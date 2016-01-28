@@ -12,6 +12,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
 
     var filteredImage: UIImage?
     var currentFilterString: String = "Brightness"
+    var showingFiltered = false
     
     @IBOutlet var imageView: UIImageView!
     @IBOutlet var originalView: UIImageView!
@@ -31,23 +32,17 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        secondaryMenu.backgroundColor = UIColor.whiteColor().colorWithAlphaComponent(0.5)
-        sliderView.backgroundColor = UIColor.whiteColor().colorWithAlphaComponent(0.5)
+        secondaryMenu.backgroundColor = UIColor.whiteColor().colorWithAlphaComponent(0.7)
+        sliderView.backgroundColor = UIColor.whiteColor().colorWithAlphaComponent(0.7)
         secondaryMenu.translatesAutoresizingMaskIntoConstraints = false
         sliderView.translatesAutoresizingMaskIntoConstraints = false
         let lpgr = UILongPressGestureRecognizer(target: self, action: "imagePressed:")
-        
+        let lpgr2 = UILongPressGestureRecognizer(target: self, action: "imagePressed:")
         lpgr.minimumPressDuration = 0.1;
+        lpgr2.minimumPressDuration = 0.1
         
         imageView.addGestureRecognizer(lpgr)
-
-        //compareButton.enabled = false
-        textOriginal.alpha = 0
-        
-//        originalView.alpha = 0
-//        textOriginal.alpha = 1
-//        imageView.alpha = 0
-
+        originalView.addGestureRecognizer(lpgr2)
     }
 
     // MARK: Share
@@ -100,7 +95,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
             editButton.selected = false
             editButton.enabled = false
             hideSliderView()
-            showFiltered()
+            showOriginal()
         }
     }
     
@@ -120,20 +115,20 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     }
     
     func showOriginal() {
-        //originalView.image = UIImage (named: "scenery")
         UIView.animateWithDuration(0.4, animations: {
-            self.originalView.alpha = 1
             self.textOriginal.alpha = 1
-            self.imageView.alpha = 0
+            self.originalView.alpha = 1
             }) { _ in}
+        showingFiltered = false
     }
     
     func showFiltered() {
+        originalView.alpha = 1
         UIView.animateWithDuration(0.4, animations: {
             self.originalView.alpha = 0
             self.textOriginal.alpha = 0
-            self.imageView.alpha = 1
             }) { _ in}
+        showingFiltered = true
 
     }
     // MARK: Filter Menu
@@ -274,6 +269,8 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
             compareButton.enabled = true
             editButton.enabled = true
         }
+        
+        
         currentFilterString = "Grayscale"
         slider.value = 1.0
     }
@@ -311,11 +308,21 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     }
     
     func imagePressed(gestureRecognizer:UIGestureRecognizer) {
-        
-        if (gestureRecognizer.state != UIGestureRecognizerState.Ended) {
-            showOriginal()
-        } else {
-            showFiltered()
+        if (compareButton.enabled) {
+            if (gestureRecognizer.state != UIGestureRecognizerState.Ended) {
+                if (showingFiltered) {
+                    showOriginal()
+                } else {
+                    showFiltered()
+                }
+
+            } else {
+                if (showingFiltered) {
+                    showOriginal()
+                } else {
+                    showFiltered()
+                }
+            }
         }
     }
     
